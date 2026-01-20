@@ -93,11 +93,13 @@ export interface HLEALMInterface extends Interface {
       | "acceptOwnership"
       | "accumulatedFees0"
       | "accumulatedFees1"
+      | "calculateSpreadDetails"
       | "canTrade"
       | "collectFees"
       | "collectSurplus"
       | "depositLiquidity"
       | "feeRecipient"
+      | "forceSetVariance"
       | "getAccumulatedFees"
       | "getLiquidityQuote"
       | "getOracleMidPrice"
@@ -108,9 +110,11 @@ export interface HLEALMInterface extends Interface {
       | "getVariance"
       | "getVolatility"
       | "initialize"
+      | "initializeEWMA"
       | "initializeWithAlphas"
       | "kImpact"
       | "kVol"
+      | "manualPrice"
       | "onDepositLiquidityCallback"
       | "onSwapCallback"
       | "owner"
@@ -121,6 +125,8 @@ export interface HLEALMInterface extends Interface {
       | "priceEWMA"
       | "renounceOwnership"
       | "setFeeRecipient"
+      | "setManualPrice"
+      | "setOracleMode"
       | "setPaused"
       | "setSpreadConfig"
       | "setTokenIndices"
@@ -133,6 +139,8 @@ export interface HLEALMInterface extends Interface {
       | "token1"
       | "token1Index"
       | "transferOwnership"
+      | "updateEWMA"
+      | "useL1Oracle"
       | "volatilityThresholdBps"
       | "withdrawLiquidity"
       | "yieldOptimizer"
@@ -143,6 +151,8 @@ export interface HLEALMInterface extends Interface {
       | "FeesCollected"
       | "LiquidityDeposited"
       | "LiquidityWithdrawn"
+      | "ManualPriceSet"
+      | "OracleModeSet"
       | "OwnershipTransferStarted"
       | "OwnershipTransferred"
       | "Paused"
@@ -166,6 +176,10 @@ export interface HLEALMInterface extends Interface {
     functionFragment: "accumulatedFees1",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "calculateSpreadDetails",
+    values: [BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "canTrade", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "collectFees",
@@ -182,6 +196,10 @@ export interface HLEALMInterface extends Interface {
   encodeFunctionData(
     functionFragment: "feeRecipient",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forceSetVariance",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getAccumulatedFees",
@@ -224,11 +242,19 @@ export interface HLEALMInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "initializeEWMA",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "initializeWithAlphas",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "kImpact", values?: undefined): string;
   encodeFunctionData(functionFragment: "kVol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "manualPrice",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "onDepositLiquidityCallback",
     values: [BigNumberish, BigNumberish, BytesLike]
@@ -256,6 +282,14 @@ export interface HLEALMInterface extends Interface {
   encodeFunctionData(
     functionFragment: "setFeeRecipient",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setManualPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setOracleMode",
+    values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: "setPaused", values: [boolean]): string;
   encodeFunctionData(
@@ -297,6 +331,14 @@ export interface HLEALMInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "updateEWMA",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "useL1Oracle",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "volatilityThresholdBps",
     values?: undefined
   ): string;
@@ -321,6 +363,10 @@ export interface HLEALMInterface extends Interface {
     functionFragment: "accumulatedFees1",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateSpreadDetails",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "canTrade", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "collectFees",
@@ -336,6 +382,10 @@ export interface HLEALMInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "feeRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "forceSetVariance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -370,11 +420,19 @@ export interface HLEALMInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "initializeEWMA",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "initializeWithAlphas",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "kImpact", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "kVol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "manualPrice",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "onDepositLiquidityCallback",
     data: BytesLike
@@ -401,6 +459,14 @@ export interface HLEALMInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setFeeRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setManualPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setOracleMode",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setPaused", data: BytesLike): Result;
@@ -440,6 +506,11 @@ export interface HLEALMInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "updateEWMA", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "useL1Oracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -511,6 +582,30 @@ export namespace LiquidityWithdrawnEvent {
     recipient: string;
     amount0: bigint;
     amount1: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ManualPriceSetEvent {
+  export type InputTuple = [price: BigNumberish];
+  export type OutputTuple = [price: bigint];
+  export interface OutputObject {
+    price: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OracleModeSetEvent {
+  export type InputTuple = [useL1Oracle: boolean];
+  export type OutputTuple = [useL1Oracle: boolean];
+  export interface OutputObject {
+    useL1Oracle: boolean;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -723,6 +818,18 @@ export interface HLEALM extends BaseContract {
 
   accumulatedFees1: TypedContractMethod<[], [bigint], "view">;
 
+  calculateSpreadDetails: TypedContractMethod<
+    [amountIn: BigNumberish, reserveIn: BigNumberish],
+    [
+      [bigint, bigint, bigint] & {
+        volSpread: bigint;
+        impactSpread: bigint;
+        totalSpread: bigint;
+      }
+    ],
+    "view"
+  >;
+
   canTrade: TypedContractMethod<[], [boolean], "view">;
 
   collectFees: TypedContractMethod<[], [void], "nonpayable">;
@@ -736,6 +843,12 @@ export interface HLEALM extends BaseContract {
   >;
 
   feeRecipient: TypedContractMethod<[], [string], "view">;
+
+  forceSetVariance: TypedContractMethod<
+    [_fastVar: BigNumberish, _slowVar: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   getAccumulatedFees: TypedContractMethod<
     [],
@@ -801,6 +914,8 @@ export interface HLEALM extends BaseContract {
 
   initialize: TypedContractMethod<[], [void], "nonpayable">;
 
+  initializeEWMA: TypedContractMethod<[], [void], "nonpayable">;
+
   initializeWithAlphas: TypedContractMethod<
     [fastAlpha: BigNumberish, slowAlpha: BigNumberish],
     [void],
@@ -810,6 +925,8 @@ export interface HLEALM extends BaseContract {
   kImpact: TypedContractMethod<[], [bigint], "view">;
 
   kVol: TypedContractMethod<[], [bigint], "view">;
+
+  manualPrice: TypedContractMethod<[], [bigint], "view">;
 
   onDepositLiquidityCallback: TypedContractMethod<
     [_amount0: BigNumberish, _amount1: BigNumberish, arg2: BytesLike],
@@ -868,6 +985,18 @@ export interface HLEALM extends BaseContract {
     "nonpayable"
   >;
 
+  setManualPrice: TypedContractMethod<
+    [_price: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setOracleMode: TypedContractMethod<
+    [_useL1Oracle: boolean],
+    [void],
+    "nonpayable"
+  >;
+
   setPaused: TypedContractMethod<[_paused: boolean], [void], "nonpayable">;
 
   setSpreadConfig: TypedContractMethod<
@@ -912,6 +1041,10 @@ export interface HLEALM extends BaseContract {
     "nonpayable"
   >;
 
+  updateEWMA: TypedContractMethod<[], [void], "nonpayable">;
+
+  useL1Oracle: TypedContractMethod<[], [boolean], "view">;
+
   volatilityThresholdBps: TypedContractMethod<[], [bigint], "view">;
 
   withdrawLiquidity: TypedContractMethod<
@@ -936,6 +1069,19 @@ export interface HLEALM extends BaseContract {
     nameOrSignature: "accumulatedFees1"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "calculateSpreadDetails"
+  ): TypedContractMethod<
+    [amountIn: BigNumberish, reserveIn: BigNumberish],
+    [
+      [bigint, bigint, bigint] & {
+        volSpread: bigint;
+        impactSpread: bigint;
+        totalSpread: bigint;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "canTrade"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
@@ -954,6 +1100,13 @@ export interface HLEALM extends BaseContract {
   getFunction(
     nameOrSignature: "feeRecipient"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "forceSetVariance"
+  ): TypedContractMethod<
+    [_fastVar: BigNumberish, _slowVar: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "getAccumulatedFees"
   ): TypedContractMethod<
@@ -1029,6 +1182,9 @@ export interface HLEALM extends BaseContract {
     nameOrSignature: "initialize"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "initializeEWMA"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "initializeWithAlphas"
   ): TypedContractMethod<
     [fastAlpha: BigNumberish, slowAlpha: BigNumberish],
@@ -1040,6 +1196,9 @@ export interface HLEALM extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "kVol"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "manualPrice"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "onDepositLiquidityCallback"
@@ -1105,6 +1264,12 @@ export interface HLEALM extends BaseContract {
     nameOrSignature: "setFeeRecipient"
   ): TypedContractMethod<[_recipient: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "setManualPrice"
+  ): TypedContractMethod<[_price: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setOracleMode"
+  ): TypedContractMethod<[_useL1Oracle: boolean], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "setPaused"
   ): TypedContractMethod<[_paused: boolean], [void], "nonpayable">;
   getFunction(
@@ -1153,6 +1318,12 @@ export interface HLEALM extends BaseContract {
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "updateEWMA"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "useL1Oracle"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "volatilityThresholdBps"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -1186,6 +1357,20 @@ export interface HLEALM extends BaseContract {
     LiquidityWithdrawnEvent.InputTuple,
     LiquidityWithdrawnEvent.OutputTuple,
     LiquidityWithdrawnEvent.OutputObject
+  >;
+  getEvent(
+    key: "ManualPriceSet"
+  ): TypedContractEvent<
+    ManualPriceSetEvent.InputTuple,
+    ManualPriceSetEvent.OutputTuple,
+    ManualPriceSetEvent.OutputObject
+  >;
+  getEvent(
+    key: "OracleModeSet"
+  ): TypedContractEvent<
+    OracleModeSetEvent.InputTuple,
+    OracleModeSetEvent.OutputTuple,
+    OracleModeSetEvent.OutputObject
   >;
   getEvent(
     key: "OwnershipTransferStarted"
@@ -1283,6 +1468,28 @@ export interface HLEALM extends BaseContract {
       LiquidityWithdrawnEvent.InputTuple,
       LiquidityWithdrawnEvent.OutputTuple,
       LiquidityWithdrawnEvent.OutputObject
+    >;
+
+    "ManualPriceSet(uint256)": TypedContractEvent<
+      ManualPriceSetEvent.InputTuple,
+      ManualPriceSetEvent.OutputTuple,
+      ManualPriceSetEvent.OutputObject
+    >;
+    ManualPriceSet: TypedContractEvent<
+      ManualPriceSetEvent.InputTuple,
+      ManualPriceSetEvent.OutputTuple,
+      ManualPriceSetEvent.OutputObject
+    >;
+
+    "OracleModeSet(bool)": TypedContractEvent<
+      OracleModeSetEvent.InputTuple,
+      OracleModeSetEvent.OutputTuple,
+      OracleModeSetEvent.OutputObject
+    >;
+    OracleModeSet: TypedContractEvent<
+      OracleModeSetEvent.InputTuple,
+      OracleModeSetEvent.OutputTuple,
+      OracleModeSetEvent.OutputObject
     >;
 
     "OwnershipTransferStarted(address,address)": TypedContractEvent<

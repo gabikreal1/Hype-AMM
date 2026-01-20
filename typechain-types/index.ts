@@ -84,8 +84,6 @@ export type { YieldTracker } from "./src/libraries/YieldTracker";
 export { YieldTracker__factory } from "./factories/src/libraries/YieldTracker__factory";
 export type { MockERC20 } from "./src/mocks/MockERC20";
 export { MockERC20__factory } from "./factories/src/mocks/MockERC20__factory";
-export type { TestableHLEALM } from "./src/mocks/TestableHLEALM";
-export { TestableHLEALM__factory } from "./factories/src/mocks/TestableHLEALM__factory";
 export type { HLEALM } from "./src/modules/HLEALM";
 export { HLEALM__factory } from "./factories/src/modules/HLEALM__factory";
 export type { HLEQuoter } from "./src/modules/HLEQuoter.sol/HLEQuoter";

@@ -277,7 +277,7 @@ describe("HLE E2E Tests", function () {
 
       // Change price by 5%
       const newPrice = (INITIAL_PRICE * 105n) / 100n;
-      await hlealm.setMockMidPrice(newPrice);
+      await hlealm.setManualPrice(newPrice);
       await hlealm.updateEWMA();
 
       // Check variance increased
@@ -340,14 +340,14 @@ describe("HLE E2E Tests", function () {
     });
   });
 
-  describe("Mock Price Changes", function () {
-    it("Should update mock price correctly", async function () {
+  describe("Manual Price Changes", function () {
+    it("Should update manual price correctly", async function () {
       const { hlealm } = await loadFixture(deployFixture);
 
       const newPrice = ethers.parseEther("2500");
-      await hlealm.setMockMidPrice(newPrice);
+      await hlealm.setManualPrice(newPrice);
 
-      expect(await hlealm.getMockMidPrice()).to.equal(newPrice);
+      expect(await hlealm.manualPrice()).to.equal(newPrice);
     });
 
     it("Should affect quote output after price change", async function () {
@@ -361,8 +361,8 @@ describe("HLE E2E Tests", function () {
       const [quote1Amount] = await hlealm.previewSwap(token0Addr, token1Addr, amountIn);
 
       // Change price to 2500
-      await hlealm.setMockMidPrice(ethers.parseEther("2500"));
-      await hlealm.forceInitialize(ethers.parseEther("2500")); // Reset EWMA
+      await hlealm.setManualPrice(ethers.parseEther("2500"));
+      await hlealm.initializeEWMA(); // Reset EWMA
 
       // Get quote at new price
       const [quote2Amount] = await hlealm.previewSwap(token0Addr, token1Addr, amountIn);
@@ -393,7 +393,7 @@ describe("HLE E2E Tests", function () {
       for (const price of prices) {
         await ethers.provider.send("evm_increaseTime", [60]);
         await ethers.provider.send("evm_mine", []);
-        await hlealm.setMockMidPrice(price);
+        await hlealm.setManualPrice(price);
         await hlealm.updateEWMA();
       }
 

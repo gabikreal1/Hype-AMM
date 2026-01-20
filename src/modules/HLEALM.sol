@@ -677,6 +677,16 @@ contract HLEALM is ISovereignALM, Ownable2Step, ReentrancyGuard {
     }
 
     /**
+     * @notice Force set variance values for testing
+     * @param _fastVar Fast variance value
+     * @param _slowVar Slow variance value
+     */
+    function forceSetVariance(uint256 _fastVar, uint256 _slowVar) external onlyOwner {
+        priceEWMA.fastVar = _fastVar;
+        priceEWMA.slowVar = _slowVar;
+    }
+
+    /**
      * @notice Deposit liquidity into the pool (only callable by owner)
      * @dev Transfers tokens from sender to pool via ALM
      * @param amount0 Amount of token0 to deposit
@@ -732,6 +742,46 @@ contract HLEALM is ISovereignALM, Ownable2Step, ReentrancyGuard {
         );
 
         emit LiquidityWithdrawn(recipient, amount0, amount1);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PUBLIC VIEW FUNCTIONS (for testing and debugging)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /**
+     * @notice Calculate spread details for a given trade
+     * @param amountIn Trade amount
+     * @param reserveIn Reserve of token being sold
+     * @return volSpread Volatility spread component
+     * @return impactSpread Impact spread component
+     * @return totalSpread Total spread (capped at MAX_SPREAD)
+     */
+    function calculateSpreadDetails(
+        uint256 amountIn,
+        uint256 reserveIn
+    ) external view returns (uint256 volSpread, uint256 impactSpread, uint256 totalSpread) {
+        // 1. Volatility spread: use max(fastVar, slowVar)
+        uint256 maxVar = priceEWMA.getMaxVariance();
+        volSpread = (maxVar * kVol) / WAD;
+        
+        // 2. Impact spread: amountIn / reserveIn * kImpact
+        impactSpread = reserveIn > 0 ? (amountIn * kImpact) / reserveIn : 0;
+        
+        // 3. Total spread (capped)
+        totalSpread = volSpread + impactSpread;
+        if (totalSpread > MAX_SPREAD) {
+            totalSpread = MAX_SPREAD;
+        }
+    }
+
+    /**
+     * @notice Update EWMA with current price (public for testing)
+     * @dev Call this after changing manual price to update variance
+     */
+    function updateEWMA() external {
+        uint256 currentPrice = _getOracleMidPrice();
+        require(currentPrice > 0, "Price not set");
+        TwoSpeedEWMA.update(priceEWMA, currentPrice);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════

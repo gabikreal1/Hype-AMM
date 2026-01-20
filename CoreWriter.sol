@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
+// only for testing purposes
+// exposes a function to send raw actions to HyperCore
+// Used only for lending/borrowing.
 contract CoreWriter {
   event RawAction(address indexed user, bytes data);
 

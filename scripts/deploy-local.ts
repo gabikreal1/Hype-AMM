@@ -4,8 +4,8 @@ import { updateNetworkDeployments, getNetworkName } from "./utils/deployments";
 /**
  * Local Test Deployment Script
  * 
- * Deploys the HLE system with TestableHLEALM for local Hardhat testing.
- * TestableHLEALM allows mocking oracle prices without real precompiles.
+ * Deploys the HLE system with HLEALM in manual price mode for local Hardhat testing.
+ * Manual price mode allows setting prices without real L1 oracle precompiles.
  * 
  * Usage:
  *   npx hardhat run scripts/deploy-local.ts --network hardhat
@@ -22,7 +22,7 @@ async function main() {
   const networkName = getNetworkName(chainId);
   
   console.log("╔════════════════════════════════════════════════════════════╗");
-  console.log("║      HLE Local Test Deployment (with TestableHLEALM)       ║");
+  console.log("║        HLE Local Test Deployment (Manual Price Mode)        ║");
   console.log("╚════════════════════════════════════════════════════════════╝\n");
   
   console.log(`Network: ${networkName} (chainId: ${chainId})`);
@@ -93,23 +93,23 @@ async function main() {
   console.log(`  Sovereign Pool: ${poolAddress}`);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // STEP 3: Deploy TestableHLEALM
+  // STEP 3: Deploy HLEALM (with manual price mode for testing)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  console.log("\nStep 3: Deploying TestableHLEALM...");
+  console.log("\nStep 3: Deploying HLEALM...");
   
-  const TestableHLEALM = await ethers.getContractFactory("TestableHLEALM");
+  const HLEALM = await ethers.getContractFactory("HLEALM");
   
-  const testableAlm = await TestableHLEALM.deploy(
+  const hlealm = await HLEALM.deploy(
     poolAddress,
     TOKEN0_INDEX,
     TOKEN1_INDEX,
     feeRecipient?.address || deployer.address,
     deployer.address
   );
-  await testableAlm.waitForDeployment();
-  const almAddress = await testableAlm.getAddress();
-  console.log(`  TestableHLEALM: ${almAddress}`);
+  await hlealm.waitForDeployment();
+  const almAddress = await hlealm.getAddress();
+  console.log(`  HLEALM: ${almAddress}`);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // STEP 4: Deploy HLEQuoter
@@ -134,12 +134,13 @@ async function main() {
   await sovereignPool.setALM(almAddress);
   console.log(`  ALM set on pool ✓`);
   
-  // Set mock price
-  await testableAlm.setMockMidPrice(INITIAL_PRICE);
-  console.log(`  Mock price set to ${ethers.formatEther(INITIAL_PRICE)} ✓`);
+  // Set manual price (disable L1 oracle for local testing)
+  await hlealm.setManualPrice(INITIAL_PRICE);
+  await hlealm.setOracleMode(false); // Use manual price, not L1 oracle
+  console.log(`  Manual price set to ${ethers.formatEther(INITIAL_PRICE)} ✓`);
   
-  // Force initialize EWMA
-  await testableAlm.forceInitialize(INITIAL_PRICE);
+  // Initialize EWMA
+  await hlealm.initializeEWMA();
   console.log(`  EWMA initialized ✓`);
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -221,7 +222,7 @@ async function main() {
   console.log(`║ Token0:         ${token0Address} ║`);
   console.log(`║ Token1:         ${token1Address} ║`);
   console.log(`║ SovereignPool:  ${poolAddress} ║`);
-  console.log(`║ TestableHLEALM: ${almAddress} ║`);
+  console.log(`║ HLEALM:         ${almAddress} ║`);
   console.log(`║ HLEQuoter:      ${quoterAddress} ║`);
   console.log("║                                                            ║");
   console.log(`║ Initial Price: 1 token0 = ${ethers.formatEther(INITIAL_PRICE)} token1          ║`);

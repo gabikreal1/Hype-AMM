@@ -43,7 +43,7 @@ export async function loadDeployedContracts(): Promise<TestContracts> {
     "node_modules/@valantis/valantis-core/src/pools/interfaces/ISovereignPool.sol:ISovereignPool", 
     addresses.sovereignPool!
   );
-  const hlealm = await ethers.getContractAt("TestableHLEALM", addresses.hlealm!);
+  const hlealm = await ethers.getContractAt("HLEALM", addresses.hlealm!);
   const hleQuoter = await ethers.getContractAt("HLEQuoter", addresses.hleQuoter!);
   
   return {
@@ -108,9 +108,9 @@ export async function deployFreshContracts(): Promise<TestContracts> {
   const sovereignPool = await SovereignPool.deploy(poolArgs);
   const poolAddress = await sovereignPool.getAddress();
   
-  // Deploy TestableHLEALM
-  const TestableHLEALM = await ethers.getContractFactory("TestableHLEALM");
-  const hlealm = await TestableHLEALM.deploy(
+  // Deploy HLEALM (real contract with manual price mode)
+  const HLEALM = await ethers.getContractFactory("HLEALM");
+  const hlealm = await HLEALM.deploy(
     poolAddress,
     0n, // token0Index
     1n, // token1Index
@@ -126,10 +126,11 @@ export async function deployFreshContracts(): Promise<TestContracts> {
   // Configure
   await sovereignPool.setALM(almAddress);
   
-  // Initialize with price
+  // Initialize with price using manual mode (not L1 oracle)
   const INITIAL_PRICE = ethers.parseEther("2000");
-  await hlealm.setMockMidPrice(INITIAL_PRICE);
-  await hlealm.forceInitialize(INITIAL_PRICE);
+  await hlealm.setManualPrice(INITIAL_PRICE);
+  await hlealm.setOracleMode(false); // Use manual price, not L1 oracle
+  await hlealm.initializeEWMA();
   
   // Bootstrap liquidity via ALM's depositLiquidity function
   const INITIAL_TOKEN0 = ethers.parseEther("100");

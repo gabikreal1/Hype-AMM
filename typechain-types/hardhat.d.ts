@@ -214,10 +214,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockERC20__factory>;
     getContractFactory(
-      name: "TestableHLEALM",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TestableHLEALM__factory>;
-    getContractFactory(
       name: "HLEALM",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.HLEALM__factory>;
@@ -493,11 +489,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MockERC20>;
     getContractAt(
-      name: "TestableHLEALM",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TestableHLEALM>;
-    getContractAt(
       name: "HLEALM",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -728,10 +719,6 @@ declare module "hardhat/types/runtime" {
       name: "MockERC20",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockERC20>;
-    deployContract(
-      name: "TestableHLEALM",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.TestableHLEALM>;
     deployContract(
       name: "HLEALM",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -1007,11 +994,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockERC20>;
-    deployContract(
-      name: "TestableHLEALM",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.TestableHLEALM>;
     deployContract(
       name: "HLEALM",
       args: any[],
