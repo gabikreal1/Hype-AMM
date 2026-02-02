@@ -137,7 +137,7 @@ Tracks deployed capital and yield for idle reserves sent to HyperCore.
 ### Install
 
 ```bash
-git clone <repo>
+git clone https://github.com/gabikreal1/HLE
 cd HLE
 forge install
 ```
@@ -217,9 +217,10 @@ pool.depositLiquidity(
 );
 ```
 
-Or via Foundry script:
+Or via Foundry script (if available):
 
 ```bash
+# Note: Check if BootstrapLiquidity script exists in DeployHLE.s.sol
 forge script script/DeployHLE.s.sol:BootstrapLiquidity \
   --rpc-url https://rpc.hyperliquid-testnet.xyz/evm \
   --broadcast
